@@ -1,9 +1,13 @@
 import {Router} from 'express'
-import {getEmployee, createEmployee, deleteEmployee, updateEmployee} from '../controllers/Usuarios.controller.js'
+import {getEmployee, getEmployees, createUser, deleteEmployee, updateEmployee} from '../controllers/Usuarios.controller.js'
+
 const router = Router()
+
 router.get('/employees', getEmployee);
 
-router.post('/employees',createEmployee);
+router.get('/employees/:id', getEmployees);
+
+router.post('/employees',createUser);
 
 router.put('/employees', updateEmployee);
 
