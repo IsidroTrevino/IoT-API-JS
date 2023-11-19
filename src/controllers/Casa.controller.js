@@ -30,3 +30,30 @@ export const verCasa = async (req,res) => {
     }
     res.send(rows);
 }
+
+export const modificarCasa = async (req,res) => {
+    const {idCasa, nombreCasa, nombreRed, contrasenaRed} = req.body;
+    const [result] = await pool.query('UPDATE Casa SET nombreCasa = ?, nombreRed = ?, contrasenaRed = ? WHERE idCasa = ?',[nombreCasa, nombreRed, contrasenaRed, idCasa]);
+    if (result.affectedRows == 0) {
+        return res.status(400).json({ message: "No existe la casa" })
+    }
+    res.send({
+        id: idCasa,
+        nombreCasa: nombreCasa,
+        nombreRed: nombreRed,
+        contrasenaRed: contrasenaRed
+    });
+}
+
+export const eliminarCasa = async (req,res) => {
+    const {idCasa} = req.body;
+    const [result] = await pool.query('UPDATE Casa SET existe = FALSE WHERE idCasa = ?',[idCasa]);
+    if (result.affectedRows == 0) {
+        return res.status(400).json({ message: "No existe la casa" })
+    }
+    res.send({
+        id: idCasa,
+        existe: false
+    });
+}
+
