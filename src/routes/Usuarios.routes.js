@@ -1,16 +1,11 @@
 import {Router} from 'express'
-import {getEmployee, getEmployees, createUser, deleteEmployee, updateUser} from '../controllers/Usuarios.controller.js'
+import {agregarUsuario, obtenerUsuario} from '../controllers/Usuarios.controller.js'
 
 const router = Router()
 
-router.get('/employees', getEmployee);
+router.post('/agregarUsuario', agregarUsuario);
 
-router.get('/employees/:id', getEmployees);
+router.get('/obtenerUsuario', obtenerUsuario);
 
-router.post('/employees',createUser);
-
-router.put('/employees/:id', updateUser);
-
-router.delete('/employees/:id',deleteEmployee);
 
 export default router
