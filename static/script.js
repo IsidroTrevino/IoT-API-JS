@@ -1,5 +1,4 @@
-// Fetch user data from the API
-fetch('http://localhost:3000/api/getUser') // Assuming '/api/getUsers' is your endpoint for getUsers
+fetch('http://localhost:3000/api/getUser') 
     .then(response => response.json())
     .then(users => {
         const usersBody = document.getElementById('users-body');
