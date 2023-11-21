@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>User Profiles</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <title>Log in</title>
+    <link rel="stylesheet" href="login.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="script.js"></script>
 </head>
 <body>
-    <div id="user-profiles">
-        <h1>User Profiles</h1>
-        <table id="users-table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Name</th>
-                    <th>ID</th>
-                    <th>Password</th>
-                </tr>
-            </thead>
-            <tbody id="users-body"></tbody>
-        </table>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Log in</button>
+        </form>
+        <p id="error-message" style="color: red;"></p> <!-- Mostrará mensajes de error -->
     </div>
 </body>
 </html>
