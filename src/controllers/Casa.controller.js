@@ -2,7 +2,7 @@ import { pool } from '../db.js'
 
 export const agregarCasa = async (req, res) => {
     const {idUsuario, nombreCasa, nombreRed, contrasenaRed} = req.body;
-    const [rows] = await pool.query('INSERT INTO Casa (idUsuario, nombreCasa, nombreRed, contrasenaRed) VALUES (?, ?, ?, ?)',[idUsuario, nombreCasa, nombreRed, contrasenaRed])
+    const [rows] = await pool.query('call agregarCasa(?,?,?,?)',[idUsuario, nombreCasa, nombreRed, contrasenaRed])
     res.send ({
         id: rows.insertId,
         idUsuario: idUsuario,
@@ -14,17 +14,17 @@ export const agregarCasa = async (req, res) => {
 
 export const verCasas = async (req,res) => {
     const {idUsuario} = req.body;
-    const [rows] = await pool.query('SELECT * FROM Casa WHERE idUsuario = ? AND existe = TRUE',[idUsuario])
+    const [result] = await pool.query('call verCasas(?)',[idUsuario])
     if (rows.length == 0) {
         return res.status(400).json({ message: "No existen casas" })
     }
 
-    res.send(rows);
+    res.json(result);
 }
 
 export const verCasa = async (req,res) => {
     const {idCasa} = req.body;
-    const [rows] = await pool.query('SELECT * FROM Casa WHERE idCasa = ? AND existe = TRUE',[idCasa])
+    const [rows] = await pool.query('call verCasa(?)',[idCasa])
     if (rows.length == 0) {
         return res.status(400).json({ message: "No existe la casa" })
     }
@@ -33,7 +33,7 @@ export const verCasa = async (req,res) => {
 
 export const modificarCasa = async (req,res) => {
     const {idCasa, nombreCasa, nombreRed, contrasenaRed} = req.body;
-    const [result] = await pool.query('UPDATE Casa SET nombreCasa = ?, nombreRed = ?, contrasenaRed = ? WHERE idCasa = ?',[nombreCasa, nombreRed, contrasenaRed, idCasa]);
+    const [result] = await pool.query('call modificarCasa(?,?,?,?)',[nombreCasa, nombreRed, contrasenaRed, idCasa]);
     if (result.affectedRows == 0) {
         return res.status(400).json({ message: "No existe la casa" })
     }
@@ -47,7 +47,7 @@ export const modificarCasa = async (req,res) => {
 
 export const eliminarCasa = async (req,res) => {
     const {idCasa} = req.body;
-    const [result] = await pool.query('UPDATE Casa SET existe = FALSE WHERE idCasa = ?',[idCasa]);
+    const [result] = await pool.query('call eliminarCasa(?)',[idCasa]);
     if (result.affectedRows == 0) {
         return res.status(400).json({ message: "No existe la casa" })
     }

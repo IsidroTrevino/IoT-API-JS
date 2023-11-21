@@ -7,4 +7,4 @@ router.post('/agregarUsuario', agregarUsuario);
 
 router.get('/obtenerUsuario', obtenerUsuario);
 
-export default router
+export default router;

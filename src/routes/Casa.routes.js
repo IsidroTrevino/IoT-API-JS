@@ -4,8 +4,11 @@ import {verCasa, verCasas, agregarCasa, modificarCasa} from '../controllers/Casa
 const router = Router();
 
 router.get('/verCasas', verCasas);
+
 router.get('/verCasa/:id', verCasa);
+
 router.post('/agregarCasa', agregarCasa);
+
 router.put('/modificarCasa', modificarCasa);
 
-export default router
+export default router;
