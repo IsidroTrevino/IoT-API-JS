@@ -1,7 +1,7 @@
-import {router} from "express";
-import { reportarRegistro, verRegistros } from "../controllers/Registro.controller";
+import { Router } from "express";
+import { reportarRegistro, verRegistros } from "../controllers/Registro.controller.js";
 
-const router = router();
+const router = Router();
 
 router.post('/reportarRegistro', reportarRegistro);
 

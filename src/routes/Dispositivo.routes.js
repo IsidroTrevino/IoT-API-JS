@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {agregarDisp, verDisps, verDisp, eliminarDisp} from '../controllers/Dispositivo.controller'
+import {agregarDisp, verDisps, verDisp, eliminarDisp} from '../controllers/Dispositivo.controller.js'
 
 const router = Router();
 

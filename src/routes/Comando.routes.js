@@ -1,5 +1,5 @@
 import {Router} from 'express'  
-import {agregarComando, verComandos, verComando, eliminarComando} from '../controllers/Comando.controller'
+import {agregarComando, verComandos, verComandosPendientes, completarComando} from '../controllers/Comando.controller.js'
 
 const router = Router();
 
@@ -7,7 +7,9 @@ router.post('/agregarComando', agregarComando);
 
 router.get('/verComandos', verComandos);
 
-router.get('/verComando/:id', verComando);
+router.get('/verComandosPendientes', verComandosPendientes);
 
-router.put('/eliminarComando', eliminarComando);
+router.put('/completarComando', completarComando);
+
+export default router;
 

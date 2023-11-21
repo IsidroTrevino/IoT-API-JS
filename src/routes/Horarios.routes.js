@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {agregarHorario, verHorarios, verHorario, eliminarHorario} from '../controllers/Horarios.controller'
+import {modificarHorario, agregarHorario, verHorarios, eliminarHorario} from '../controllers/Horarios.controller.js'
 
 const router = Router();
 
@@ -7,7 +7,7 @@ router.post('/agregarHorario', agregarHorario);
 
 router.get('/verHorarios', verHorarios);
 
-router.get('/verHorario/:id', verHorario);
+router.put('/modificarHorario', modificarHorario);
 
 router.put('/eliminarHorario', eliminarHorario);
 

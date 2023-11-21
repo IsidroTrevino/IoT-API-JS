@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { reportarFalla, verFallas } from "../controllers/Falla.controller";
+import { reportarFalla, verFallas } from "../controllers/Falla.controller.js";
 
 const router = Router();
 
