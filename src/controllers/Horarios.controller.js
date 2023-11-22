@@ -41,12 +41,12 @@ export const eliminarHorario = async (req,res) => {
 }
 
 export const verHorarios = async (req,res) => {
-    const {idDisp} = req.body;
+    const {idDisp} = req.params;
     const [result] = await pool.query('call verHorarios(?)',[idDisp])
     if (result.length == 0) {
         return res.status(400).json({ message: "No existen horarios" })
     }
 
-    res.json(result);
+    res.json(result[0]);
 }
 

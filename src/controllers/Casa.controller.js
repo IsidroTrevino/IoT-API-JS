@@ -13,22 +13,21 @@ export const agregarCasa = async (req, res) => {
 }
 
 export const verCasas = async (req,res) => {
-    const {idUsuario} = req.body;
+    const {idUsuario} = req.params;
     const [result] = await pool.query('call verCasas(?)',[idUsuario])
-    if (rows.length == 0) {
+    if (result.length == 0) {
         return res.status(400).json({ message: "No existen casas" })
     }
-
-    res.json(result);
+    res.json(result[0]);
 }
 
 export const verCasa = async (req,res) => {
-    const {idCasa} = req.body;
+    const {idCasa} = req.params;
     const [rows] = await pool.query('call verCasa(?)',[idCasa])
     if (rows.length == 0) {
         return res.status(400).json({ message: "No existe la casa" })
     }
-    res.send(rows);
+    res.json(rows[0]);
 }
 
 export const modificarCasa = async (req,res) => {

@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/agregarHorario', agregarHorario);
 
-router.get('/verHorarios', verHorarios);
+router.get('/verHorarios/:idDisp', verHorarios);
 
 router.put('/modificarHorario', modificarHorario);
 

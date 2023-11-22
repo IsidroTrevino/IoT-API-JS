@@ -5,9 +5,9 @@ const router = Router();
 
 router.post('/agregarDisp', agregarDisp);
 
-router.get('/verDisps', verDisps);
+router.get('/verDisps/:idCasa', verDisps);
 
-router.get('/verDisp/:id', verDisp);
+router.get('/verDisp/:idDisp', verDisp);
 
 router.put('/eliminarDisp', eliminarDisp);
 

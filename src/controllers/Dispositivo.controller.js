@@ -12,22 +12,22 @@ export const agregarDisp = async (req, res) => {
 };
 
 export const verDisps = async (req,res) => {   
-    const {idCasa} = req.body;
+    const {idCasa} = req.params;
     const [result] = await pool.query('call verDisps(?)',[idCasa])
     if (result.length == 0) {
         return res.status(400).json({ message: "No existen dispositivos" })
     }
 
-    res.json(result);
+    res.json(result[0]);
 }
 
 export const verDisp = async (req,res) => {
-    const {idDisp} = req.body;
-    const [rows] = await pool.query('call verDisp(?)',[idDisp])
-    if (rows.length == 0) {
+    const {idDisp} = req.params;
+    const [result] = await pool.query('call verDisp(?)',[idDisp])
+    if (result.length == 0) {
         return res.status(400).json({ message: "No existe el dispositivo" })
     }
-    res.send(rows);
+    res.json(result[0]);
 }
 
 export const eliminarDisp = async (req,res) => {

@@ -3,9 +3,9 @@ import {verCasa, verCasas, agregarCasa, modificarCasa} from '../controllers/Casa
 
 const router = Router();
 
-router.get('/verCasas', verCasas);
+router.get('/verCasas/:idUsuario', verCasas);
 
-router.get('/verCasa/:id', verCasa);
+router.get('/verCasa/:idCasa', verCasa);
 
 router.post('/agregarCasa', agregarCasa);
 
