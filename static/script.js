@@ -1,3 +1,5 @@
+const server = "10.22.137.183";
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('login-form').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -5,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
-        const apiUrl = 'http://localhost:3000/api/obtenerUsuario';
+        const apiUrl = `http://${server}:3000/api/obtenerUsuario`;
 
         fetch(apiUrl, {
             method: 'POST',
