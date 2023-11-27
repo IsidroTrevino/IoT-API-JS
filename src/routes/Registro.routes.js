@@ -5,6 +5,6 @@ const router = Router();
 
 router.post('/reportarRegistro', reportarRegistro);
 
-router.get('/verRegistros', verRegistros);
+router.get('/verRegistros/:idDisp', verRegistros);
 
 export default router;

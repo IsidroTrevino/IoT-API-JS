@@ -24,15 +24,16 @@ export const agregarUsuario = async (req, res) => {
 export const obtenerUsuario = async (req, res) => {
     const { nombreUsuario, contrasena } = req.body;
     const [result] = await pool.query('call obtenerUsuario(?,?)', [nombreUsuario, contrasena])
-    if (result.length === 0) {
+    if (result[0].length == 0) {
         return res.status(400).json({ message: "Usuario o contraseña incorrectos" });
     }
+	console.log(result[0][0]);
     res.json({
         idUsuario: result[0][0].idUsuario,
         nombreUsuario: result[0][0].nombreUsuario,
         nombre: result[0][0].nombre,
         apellido: result[0][0].apellido
-});
+	});
 }
 
 

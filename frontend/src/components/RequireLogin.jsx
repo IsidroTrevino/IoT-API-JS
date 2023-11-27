@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 
 const RequireLogin = () => {
 
-	const {user} = useUser();
+	const {user, setUser} = useUser();
 	const navigate = useNavigate();
 
 	useEffect(() => {

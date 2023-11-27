@@ -15,6 +15,7 @@ const Home = () => {
 
 		const getCasas = async () => {
 			try {
+				console.log(user.idUsuario);
 				const response = await fetch(`http://${server}:3000/api/verCasas/${user.idUsuario}`);
 				const body = await response.json();
 				setCasas(body);

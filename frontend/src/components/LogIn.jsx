@@ -30,11 +30,12 @@ const LogIn = () => {
         })
         .then(response => response.json())
         .then(userData => {
-            if (userData) {
+            if (userData.nombreUsuario) {
                 // Se encontró un usuario coincidente
                 // window.location.href = 'Dashboard.html'; // Redirigir al dashboard
 				console.log("Logged in");
 				setUser(userData);
+				console.log(userData);
 				navigate("/home");
             } else {
 				console.error('Error:', error);

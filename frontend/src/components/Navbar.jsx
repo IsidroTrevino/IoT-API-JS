@@ -14,7 +14,7 @@ const Navbar = () => {
 	return (
 		<nav>
 			<h1>Project</h1>
-				<button className="logout-button" onClick={logout}>Log out</button>
+				<button className="small logout-button" onClick={logout}>Log out</button>
 		</nav>
 	)
 

@@ -3,6 +3,7 @@
 * {
 	font-family: 'Roboto';
 	margin: 0;
+	box-sizing: border-box;
 }
 
 body, #root, .App {
@@ -30,31 +31,91 @@ h2 {
 	margin-bottom: 10px;
 }
 
+.space-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
 .input-group {
     margin-bottom: 10px;
 	width: 100%;
 }
 
-.input-group label {
+.input-group:not(.inline) label {
     display: block;
     margin-bottom: 5px;
 }
 
-.input-group input {
-    width: 90%;
+.input-group input,
+.input-group select {
+    width: 100%;
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #ddd;
+	transition: all 150ms ease;
+}
+
+select.error {
+	border: 1px solid red;
+}
+
+::-webkit-datetime-edit-second-field {
+	background: white;
+	color: transparent;
+	margin-left: -3px;
+	position: absolute;
+	width: 1px;
+}
+
+.input-group.inline {
+	display: flex;
+	align-items: center;
+}
+
+.input-group.inline label {
+	width: 150px;
+}
+
+.button-group {
+	display: flex;
+	gap: 10px;
 }
 
 button {
-    width: 100%;
     padding: 10px;
     background-color: #007BFF;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+	transition: all 150ms ease;
+}
+
+button:not(.small) {
+	width: 100%;
+}
+
+button:not(:disabled):hover {
+	transform: translateY(-2px);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.512);
+}
+
+button:disabled {
+	background: gray;
+	color: white;
+	cursor:not-allowed;
+}
+
+.red {
+	background-color: rgb(210, 64, 64);
+	color: white;
+}
+
+.white {
+	background-color: white;
+	color: black;
+	border: 1px solid #ddd;
 }
 
 .signup-link {
@@ -171,6 +232,8 @@ nav h1 {
 	width: 100%;
 	height: 400px;
 	margin-top: 15px;
+	overflow: hidden;
+	position: relative;
 }
 
 .marcas {
@@ -187,6 +250,29 @@ nav h1 {
 .marca {
 	text-align: right;
 	height: 1em;
+	position: relative;
+}
+
+.marca:nth-child(even) {
+	opacity: 0;
+}
+
+.marca::after, .marca::before {
+	content: '';
+	width: 1000px;
+	height: 1px;
+	position: absolute;
+	left: calc(100% + 5px);
+}
+
+.marca::after {
+	background: rgba(155, 155, 155, 0.476);
+	bottom: calc(100% + 1px);
+}
+
+.marca::before {
+	background: rgba(155, 155, 155, 0.152);
+	top: calc(100% + 1px);
 }
 
 .days {
@@ -203,6 +289,7 @@ nav h1 {
 	border-top: 1px solid black;
 	border-bottom: 1px solid black;
 	border-left: 1px solid black;
+	position: relative;
 }
 
 .day:last-child {
@@ -219,6 +306,97 @@ nav h1 {
 
 .hora {
 	width: 100%;
-	background: rgb(111, 230, 111);
-	border-radius: 2px;
+	border-radius: 5px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.modal-background {
+	background-color: rgba(0, 0, 0, 0.308);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: 150ms ease;
+	pointer-events: none;
+}
+
+.modal-background.active {
+	opacity: 1;
+	pointer-events: all;
+}
+
+.modal {
+	background-color: white;
+	width: 300px;
+	padding: 20px;
+	border-radius: 10px;
+	display: none;
+	animation: appear forwards linear 150ms;
+}
+
+@keyframes appear {
+	0% {
+		opacity: 0;
+		transform: translateY(100px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+}
+
+.modal-background.active .modal {
+	display: block;
+}
+
+.modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.modal-header span {
+	font-size: 30px;
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+.tabla-registros {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid gray;
+}
+
+.registro, .registro-header {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 30px;
+	padding: 0 20px;
+}
+
+.registro-header {
+	background: gray;
+	color: white;
+}
+
+.registro:nth-child(odd) {
+	background: lightgray;
+}
+
+.columna {
+	text-align: left;
+	width: 100%;
+}
+
+.registro-header .columna {
+	font-weight: bold;
 }

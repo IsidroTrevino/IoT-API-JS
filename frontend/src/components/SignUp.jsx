@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {server} from '../App';
+import { useUser } from '../hooks/useUser';
 
 const SignUp = () => {
+
+	const {setUser} = useUser();
+	const navigate = useNavigate();
 
 	const [form, setForm] = useState({
 		nombre: '',
@@ -39,7 +43,9 @@ const SignUp = () => {
         .then(response => response.json())
         .then(userData => {
 			console.log("Created user");
-			console.log(userData);	
+			console.log(userData);
+			setUser(userData);
+			navigate("/home");
         })
         .catch(error => {
             console.error('Error:', error);

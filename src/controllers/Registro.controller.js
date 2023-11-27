@@ -12,12 +12,9 @@ export const reportarRegistro = async (req, res) => {
 }
 
 export const verRegistros = async (req,res) => {
-    const {idDisp} = req.body;
+    const {idDisp} = req.params;
     const [result] = await pool.query('call verRegistros(?)',[idDisp])
-    if (result.length == 0) {
-        return res.status(400).json({ message: "No existen registros" })
-    }
 
-    res.json(result);
+    res.json(result[0]);
 }
 

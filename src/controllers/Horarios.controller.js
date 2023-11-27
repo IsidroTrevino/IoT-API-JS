@@ -4,7 +4,7 @@ export const agregarHorario = async (req, res) => {
     const {idDisp, diaSemana, horaInicio,horaFinal,accion} = req.body;
     const [rows] = await pool.query('call agregarHorario(?,?,?,?,?)',[idDisp, diaSemana, horaInicio,horaFinal,accion])
     res.send ({
-        id: rows.insertId,
+        idHorario: rows[0][0].idHorario,
         idDisp: idDisp,
         diaSemana: diaSemana,
         horaInicio: horaInicio,
@@ -15,7 +15,7 @@ export const agregarHorario = async (req, res) => {
 
 export const modificarHorario = async (req,res) => {
     const {idHorario, diaSemana, horaInicio,horaFinal,accion} = req.body;
-    const [result] = await pool.query('call modificarHorario(?,?,?,?,?)',[diaSemana, horaInicio,horaFinal,accion,idHorario]);
+    const [result] = await pool.query('call modificarHorario(?,?,?,?,?)',[idHorario,diaSemana, horaInicio,horaFinal,accion]);
     if (result.affectedRows == 0) {
         return res.status(400).json({ message: "No existe el horario" })
     }

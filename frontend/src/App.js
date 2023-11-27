@@ -6,7 +6,7 @@ import RequireLogin from './components/RequireLogin';
 import Casa from './components/Casa';
 import Dispositivo from './components/Dispositivo';
 
-export const server = "10.22.137.183";
+export const server = "localhost";
 
 function App() {
   return (
