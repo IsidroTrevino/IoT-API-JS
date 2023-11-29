@@ -13,7 +13,7 @@ const Navbar = () => {
 
 	return (
 		<nav>
-			<h1>Project</h1>
+			<h1>Smart Covers</h1>
 				<button className="small logout-button" onClick={logout}>Log out</button>
 		</nav>
 	)

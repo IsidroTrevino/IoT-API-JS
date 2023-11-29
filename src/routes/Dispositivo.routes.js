@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {agregarDisp, verDisps, verDisp, eliminarDisp} from '../controllers/Dispositivo.controller.js'
+import {agregarDisp, verDisps, verDisp, eliminarDisp, modificarDisp} from '../controllers/Dispositivo.controller.js'
 
 const router = Router();
 
@@ -10,6 +10,8 @@ router.get('/verDisps/:idCasa', verDisps);
 router.get('/verDisp/:idDisp', verDisp);
 
 router.put('/eliminarDisp', eliminarDisp);
+
+router.put('/modificarDisp', modificarDisp);
 
 
 export default router;

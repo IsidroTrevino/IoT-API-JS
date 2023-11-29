@@ -15,6 +15,10 @@ const Dispositivo = () => {
 	const [disp, setDisp] = useState(undefined);
 	const [horarios, setHorarios] = useState(undefined);
 
+	const [overrideMode, setOverrideMode] = useState(-1);
+
+	const [clearing, setClearing] = useState(false);
+
 	useEffect(() => {
 
 		const getDisp = async () => {
@@ -24,7 +28,6 @@ const Dispositivo = () => {
 			setDisp(body[0]);
 
 		}
-		getDisp();
 
 		const getHorarios = async () => {
 
@@ -33,7 +36,15 @@ const Dispositivo = () => {
 			setHorarios(body);
 
 		}
+
+		const interval = setInterval(() => {
+			getDisp();
+			getHorarios();
+		}, 1000);
+		getDisp();
 		getHorarios();
+
+		return () => clearInterval(interval);
 
 	}, []);
 
@@ -64,8 +75,18 @@ const Dispositivo = () => {
 	const editSchedule = (hr, i) => {
 		setModalInfo({
 			title: 'Schedule Info',
-			content: <EditHorario mode="EDIT" hr={hr} i={i} back={clickHora} horarios={horarios} setHorarios={setHorarios}/>
+			content: <EditHorario idDisp={idDisp} mode="EDIT" hr={hr} i={i} back={clickHora} horarios={horarios} setHorarios={setHorarios}/>
 		})
+	}
+
+	const actionValue = (val) => {
+		switch(val) {
+			case 0: return "Open";
+			case 1: return "1/4 closed";
+			case 2: return "Half closed";
+			case 3: return "3/4 closed";
+			case 4: return "Close";
+		}
 	}
 
 	const clickHora = (hr, i) => {
@@ -82,16 +103,6 @@ const Dispositivo = () => {
 			}
 		}
 
-		const action = (val) => {
-			switch(val) {
-				case 0: return "Close";
-				case 1: return "Open";
-				case 2: return "Half closed";
-				case 3: return "1/4 closed";
-				case 4: return "3/4 closed";
-			}
-		}
-
 		const deleteHorario = async () => {
 
 			const response = await fetch(`http://${server}:3000/api/eliminarHorario`, {
@@ -101,6 +112,16 @@ const Dispositivo = () => {
 				},
 				body: JSON.stringify({
 					idHorario: hr.idHorario
+				})
+			});
+
+			await fetch(`http://${server}:3000/api/mqtt`, {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					comando: idDisp + "="
 				})
 			});
 
@@ -115,7 +136,7 @@ const Dispositivo = () => {
 				<p>{weekday(hr.diaSemana)}</p>
 				<p>Start Time: {hr.horaInicio.substr(0,5)}</p>
 				<p>End Time: {hr.horaFinal.substr(0,5)}</p>
-				<p>Action: {action(hr.accion)}</p>
+				<p>Action: {actionValue(hr.accion)}</p>
 				<br />
 				<div className="button-group">
 					<button onClick={() => editSchedule(hr,i)}>Edit</button>
@@ -175,6 +196,85 @@ const Dispositivo = () => {
 		}
 	}
 
+	const modeValue = mode => {
+		switch(mode) {
+			case 0: return "Reading sensor";
+			case 1: return "Manual override";
+			case 2: return "Schedule override";
+		}
+	}
+
+	const setOverride = async () => {
+
+		if(overrideMode == -1) return;
+
+		setDisp({
+			...disp,
+			modo: 1,
+			estado: Number(overrideMode)
+		});
+
+		await fetch(`http://${server}:3000/api/modificarDisp`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				idDisp,
+				modo: 1,
+				estado: overrideMode
+			})
+		});
+
+		await fetch(`http://${server}:3000/api/mqtt`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				comando: idDisp + "!" + overrideMode
+			})
+		});
+		
+	}
+
+	const cancelOverride = async () => {
+		setDisp({
+			...disp,
+			modo: 0
+		});
+
+		await fetch(`http://${server}:3000/api/modificarDisp`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				idDisp,
+				modo: 0,
+				estado: disp.estado
+			})
+		});
+
+		await fetch(`http://${server}:3000/api/mqtt`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				comando: idDisp + "?"
+			})
+		});
+
+	}
+
+	const clearLog = async () => {
+
+		await fetch(`http://${server}:3000/api/borrarRegistros/${idDisp}`);
+		setClearing(true);
+
+	}
+
 	return (
 		
 		<div className="home-container">
@@ -185,97 +285,133 @@ const Dispositivo = () => {
 					: <>
 					<Link className="back" to={`/casa/${disp.idCasa}`}>&lt; Back</Link>
 					<h2>Welcome, {user.nombre} {user.apellido}</h2>
-	
+
 					<div className="info-disp">
 						<div className="info-left">
-							<h3>{disp.nombreDisp}</h3>
-							<br />
-							<Registros idDisp={idDisp}/>
-						</div>
-						<div className="info-right">
-							<div className="space-between">
-								<h3>Schedule</h3>
-								<button disabled={modalActive} className="small" onClick={() => newSchedule()}>+ Add Block</button>
-							</div>
-							<div className="calendario">
-								<div className="marcas">
-									<div className="marca">0:00</div>
-									<div className="marca">1:00</div>
-									<div className="marca">2:00</div>
-									<div className="marca">3:00</div>
-									<div className="marca">4:00</div>
-									<div className="marca">5:00</div>
-									<div className="marca">6:00</div>
-									<div className="marca">7:00</div>
-									<div className="marca">8:00</div>
-									<div className="marca">9:00</div>
-									<div className="marca">10:00</div>
-									<div className="marca">11:00</div>
-									<div className="marca">12:00</div>
-									<div className="marca">13:00</div>
-									<div className="marca">14:00</div>
-									<div className="marca">15:00</div>
-									<div className="marca">16:00</div>
-									<div className="marca">17:00</div>
-									<div className="marca">18:00</div>
-									<div className="marca">19:00</div>
-									<div className="marca">20:00</div>
-									<div className="marca">21:00</div>
-									<div className="marca">22:00</div>
-									<div className="marca">23:00</div>
-								</div>
-								<div className="days">
-									<div className="day">
-										<h4>Monday</h4>
-										{horarios.map((hr, i) => (
-											hr.diaSemana == 0 && blockHora(hr, i)
-										))}
+							<div className="bubble-container">
+								<h3>Device: {disp.nombreDisp}</h3>
+								<br />
+								<div className="spread-container">
+									<div>
+										<p><b>Status:</b> {actionValue(disp.estado)}</p>
+										<p><b>Mode:</b> {modeValue(disp.modo)}</p>
 									</div>
-									<div className="day">
-										<h4>Tuesday</h4>
-										{horarios.map((hr, i) => (
-											hr.diaSemana == 1 && blockHora(hr, i)
-										))}
-									</div>
-									<div className="day">
-										<h4>Wednesday</h4>
-										{horarios.map((hr, i) => (
-											hr.diaSemana == 2 && blockHora(hr, i)
-										))}
-									</div>
-									<div className="day">
-										<h4>Thursday</h4>
-										{horarios.map((hr, i) => (
-											hr.diaSemana == 3 && blockHora(hr, i)
-										))}
-									</div>
-									<div className="day">
-										<h4>Friday</h4>
-										{horarios.map((hr, i) => (
-											hr.diaSemana == 4 && blockHora(hr, i)
-										))}
-									</div>
-									<div className="day">
-										<h4>Saturday</h4>
-										{horarios.map((hr, i) => (
-											hr.diaSemana == 5 && blockHora(hr, i)
-										))}
-									</div>
-									<div className="day">
-										<h4>Sunday</h4>
-										{horarios.map((hr, i) => (
-											hr.diaSemana == 6 && blockHora(hr, i)
-										))}
-									</div>
-								</div>
-								<div className={`modal-background ${modalActive ? 'active' : ''}`}>
-									<div className="modal">
-										<div className="modal-header">
-											<h3>{modalInfo.title}</h3>
-											<span onClick={closeModal}>&times;</span>
+									<div>
+										<div className="input-group inline">
+											{disp.modo != 1
+											? <>
+												<select className="connected-right" name="accion" id="accion" value={overrideMode} onChange={e => setOverrideMode(e.target.value)}>
+													<option value={-1} disabled defaultChecked style={{color:"red"}}>Choose an option</option>
+													<option value={4}>Close</option>
+													<option value={0}>Open</option>
+													<option value={2}>Half closed</option>
+													<option value={1}>1/4 closed</option>
+													<option value={3}>3/4 closed</option>
+												</select>
+												<button className="small connected-left" onClick={setOverride}>Override</button>
+											</>
+											: <>
+												<button className="small red" onClick={cancelOverride}>◼ Stop override</button>
+											</>}
 										</div>
-										<br />
-										{modalInfo.content}
+									</div>
+								</div>
+							</div>
+							<div className="bubble-container">
+								<div className="space-between">
+									<h3>Logs</h3>
+									<button disabled={clearing} className="small white" onClick={clearLog}>{clearing ? "..." : "Clear logs"}</button>
+								</div>
+								<br />
+								<Registros idDisp={idDisp} actionValue={actionValue} setClearing={setClearing}/>
+							</div>
+						</div>
+							<div className="info-right">
+								<div className="bubble-container">
+									<div className="space-between">
+										<h3>Schedule</h3>
+										<button disabled={modalActive} className="small" onClick={() => newSchedule()}>+ Add Block</button>
+									</div>
+								<div className="calendario">
+									<div className="marcas">
+										<div className="marca">0:00</div>
+										<div className="marca">1:00</div>
+										<div className="marca">2:00</div>
+										<div className="marca">3:00</div>
+										<div className="marca">4:00</div>
+										<div className="marca">5:00</div>
+										<div className="marca">6:00</div>
+										<div className="marca">7:00</div>
+										<div className="marca">8:00</div>
+										<div className="marca">9:00</div>
+										<div className="marca">10:00</div>
+										<div className="marca">11:00</div>
+										<div className="marca">12:00</div>
+										<div className="marca">13:00</div>
+										<div className="marca">14:00</div>
+										<div className="marca">15:00</div>
+										<div className="marca">16:00</div>
+										<div className="marca">17:00</div>
+										<div className="marca">18:00</div>
+										<div className="marca">19:00</div>
+										<div className="marca">20:00</div>
+										<div className="marca">21:00</div>
+										<div className="marca">22:00</div>
+										<div className="marca">23:00</div>
+									</div>
+									<div className="days">
+										<div className="day">
+											<h4>Monday</h4>
+											{horarios.map((hr, i) => (
+												hr.diaSemana == 0 && blockHora(hr, i)
+											))}
+										</div>
+										<div className="day">
+											<h4>Tuesday</h4>
+											{horarios.map((hr, i) => (
+												hr.diaSemana == 1 && blockHora(hr, i)
+												))}
+										</div>
+										<div className="day">
+											<h4>Wednesday</h4>
+											{horarios.map((hr, i) => (
+												hr.diaSemana == 2 && blockHora(hr, i)
+												))}
+										</div>
+										<div className="day">
+											<h4>Thursday</h4>
+											{horarios.map((hr, i) => (
+												hr.diaSemana == 3 && blockHora(hr, i)
+												))}
+										</div>
+										<div className="day">
+											<h4>Friday</h4>
+											{horarios.map((hr, i) => (
+												hr.diaSemana == 4 && blockHora(hr, i)
+												))}
+										</div>
+										<div className="day">
+											<h4>Saturday</h4>
+											{horarios.map((hr, i) => (
+												hr.diaSemana == 5 && blockHora(hr, i)
+												))}
+										</div>
+										<div className="day">
+											<h4>Sunday</h4>
+											{horarios.map((hr, i) => (
+												hr.diaSemana == 6 && blockHora(hr, i)
+												))}
+										</div>
+									</div>
+									<div className={`modal-background ${modalActive ? 'active' : ''}`}>
+										<div className="modal">
+											<div className="modal-header">
+												<h3>{modalInfo.title}</h3>
+												<span onClick={closeModal}>&times;</span>
+											</div>
+											<br />
+											{modalInfo.content}
+										</div>
 									</div>
 								</div>
 							</div>

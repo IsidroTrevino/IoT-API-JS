@@ -1,4 +1,6 @@
+import e from 'express';
 import { pool } from "../db.js";
+import { mqttClient, publishTopic } from '../routes/Comando.routes.js';
 
 export const agregarComando = async (req, res) => {
     const { idDisp, horaFin,accion,estado } = req.body;
@@ -40,4 +42,14 @@ export const completarComando = async (req, res) => {
         id: idComando,
         existe: false,
     });
+}
+
+export const mandarMqtt = async (req, res) => {
+	const {comando} = req.body;
+	try {
+		await mqttClient.publishAsync(publishTopic, comando);
+		res.status(200).json({mensaje: "Comando mandado"})
+	} catch (err) {
+		res.status(500).json({mensaje: "Error mandando comando"})
+	}
 }

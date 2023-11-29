@@ -15,6 +15,15 @@ export const verRegistros = async (req,res) => {
     const {idDisp} = req.params;
     const [result] = await pool.query('call verRegistros(?)',[idDisp])
 
-    res.json(result[0]);
+	let registros = result[0].reverse();
+
+    res.json(registros);
 }
 
+export const borrarRegistros = async (req, res) => {
+	const {idDisp} = req.params;
+	
+	const [result] = await pool.query('call borrarRegistros(?)', [idDisp]);
+	res.sendStatus(200);
+	
+}

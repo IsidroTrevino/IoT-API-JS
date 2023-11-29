@@ -67,6 +67,16 @@ const EditHorario = ({hr, i, back, horarios, setHorarios, mode, idDisp}) => {
 			
 		}
 
+		await fetch(`http://${server}:3000/api/mqtt`, {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				comando: idDisp + "="
+			})
+		});
+
 		horarios[i] = editHorario;
 		setHorarios(horarios);
 		
@@ -101,11 +111,11 @@ const EditHorario = ({hr, i, back, horarios, setHorarios, mode, idDisp}) => {
 			<label htmlFor="accion">Action: </label>
 			<select className={error ? 'error' : ''} name="accion" id="accion" value={editHorario.accion} onChange={updateValueNumber}>
 				<option value={-1} disabled defaultChecked style={{color:"red"}}>Choose an option</option>
-				<option value={0}>Close</option>
-				<option value={1}>Open</option>
+				<option value={4}>Close</option>
+				<option value={0}>Open</option>
 				<option value={2}>Half closed</option>
-				<option value={3}>1/4 closed</option>
-				<option value={4}>3/4 closed</option>
+				<option value={1}>1/4 closed</option>
+				<option value={3}>3/4 closed</option>
 			</select>
 		</div>
 

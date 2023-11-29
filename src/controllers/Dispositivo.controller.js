@@ -42,3 +42,11 @@ export const eliminarDisp = async (req,res) => {
     });
 }
 
+export const modificarDisp = async (req,res) => { 
+	const {idDisp, modo, estado} = req.body;
+    const [result] = await pool.query('call modificarDisp(?,?,?)',[idDisp, modo, estado]);
+    if (result.affectedRows == 0) {
+        return res.status(400).json({ message: "No existe el disp" })
+    }
+    res.send("success");
+}
